@@ -105,9 +105,23 @@
     border: 1px solid red;
 }
 
+.add-variant-btn-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: auto;
+    width: 100%;
+}
+
+.add-row-btn-container {
+    /* display: flex; */
+    margin: auto;
+    width: 100%;
+}
+
 .add-row-btn {
     padding: 10px 20px;
-    background-color: #28a745;
+    background-color: transparent;
     color: white;
     border: none;
     border-radius: 5px;
@@ -115,8 +129,13 @@
     margin: auto;
 }
 
+.add-row-btn {
+    margin: auto;
+
+}
+
 .add-row-btn:hover {
-    background-color: #218838;
+    /* background-color: #218838; */
 }
 
 .table {
@@ -140,9 +159,11 @@
     max-width: 100vw;
     /* overflow-x: scroll; */
 }
-.table-row div{
+
+.table-row div {
     /* display: flex; */
 }
+
 .filter {
     flex: 1;
     padding-right: 20px;
@@ -215,8 +236,8 @@
 }
 
 .add-variant-btn {
-    /* padding: 5px 10px; */
-    /* background-color: #17a2b8; */
+    padding: 5px 10px;
+    background-color: transparent;
     color: white;
     border: none;
     border-radius: 5px;
@@ -224,7 +245,7 @@
 }
 
 .add-variant-btn:hover {
-    background-color: #138496;
+    /* background-color: #168a16; */
 }
 
 .delete-row-btn,
@@ -250,6 +271,7 @@
     /* margin-left: 10px; */
     margin: auto;
 }
+
 /*  */
 .hide {
     visibility: hidden;
@@ -265,6 +287,7 @@
     visibility: visible;
     opacity: 1;
 }
+
 /*  */
 .variant-action-delete {
     position: absolute;
@@ -354,11 +377,46 @@
 
 .filter-action {
     position: absolute;
-    top: 10px;
-    display: none;
+    top: 2rem;
+    left: 1rem;
+    /* display: none; */
+    visibility: hidden;
+    opacity: 0;
+    transition: visibility 0s, opacity 0.5s ease;
 }
 
-.row-number:hover .filter-action {
-    display: block;
-    z-index: 2;
+.row-number-box {
+    cursor: pointer;
+}
+
+.row-number-box:hover .filter-action {
+    /* display: block; */
+    visibility: visible;
+    opacity: 1;
+}
+
+
+@media (max-width: 768px) {
+    .upper {}
+
+    .filter,
+    .variants {}
+}
+
+.filter-name-head {
+    height: 2rem;
+    width: 30rem;
+    text-align: center;
+    justify-content: center;
+}
+
+.variant_head {
+    display: flex;
+    height: 2rem;
+    justify-content: center;
+}
+
+.table-row-head div {
+    display: flex;
+    /* justify-content: center; */
 }

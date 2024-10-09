@@ -3,15 +3,6 @@ import '../styles/Right.css';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 
 const initialRows = [
-    {
-        id: '0',
-        filter: 'Product filter',
-        variants: [
-            { id: '1', content: 'primary variant', image: null },
-            { id: '2', content: 'variant 2', image: null },
-            { id: '3', content: 'variant 3', image: null },
-        ],
-    },
 
     {
         id: '1',
@@ -65,10 +56,12 @@ function Right() {
 
     // Add new row
     const addRow = () => {
-        setRows([
-            ...rows,
-            { id: Date.now().toString(), filter: 'New Collection', variants: [] },
-        ]);
+        const newRow = {
+            id: Date.now().toString(),
+            filter: 'New Collection',
+            variants: rows[0].variants.map(variant => ({ ...variant, id: Date.now().toString(), content: 'New Variant', image: null })),
+        };
+        setRows([...rows, newRow]);
     };
 
     // Delete row
@@ -77,22 +70,30 @@ function Right() {
     };
 
     // Add new variant
-    const addVariant = (rowIndex) => {
-        const updatedRows = [...rows];
-        updatedRows[rowIndex].variants.push({
+    const addVariant = () => {
+        const newVariant = {
             id: Date.now().toString(),
             content: 'New Variant',
             image: null,
-        });
+        };
+        const updatedRows = rows.map(row => ({
+            ...row,
+            variants: [...row.variants, newVariant],
+        }));
         setRows(updatedRows);
     };
 
     // Delete variant
     const deleteVariant = (rowIndex, variantIndex) => {
-        const updatedRows = [...rows];
-        updatedRows[rowIndex].variants = updatedRows[rowIndex].variants.filter(
-            (_, i) => i !== variantIndex
-        );
+        const updatedRows = rows.map((row, index) => {
+            if (index === rowIndex) {
+                return {
+                    ...row,
+                    variants: row.variants.filter((_, i) => i !== variantIndex),
+                };
+            }
+            return row;
+        });
         setRows(updatedRows);
     };
 
@@ -102,13 +103,19 @@ function Right() {
         const reader = new FileReader();
 
         reader.onloadend = () => {
-            const updatedRows = [...rows];
-            updatedRows[rowIndex].variants[variantIndex].image = reader.result; // Store the base64 image string
+            const updatedRows = rows.map((row, index) => {
+                if (index === rowIndex) {
+                    const updatedVariants = [...row.variants];
+                    updatedVariants[variantIndex] = { ...updatedVariants[variantIndex], image: reader.result };
+                    return { ...row, variants: updatedVariants };
+                }
+                return row;
+            });
             setRows(updatedRows);
         };
 
         if (file) {
-            reader.readAsDataURL(file); // Convert image file to base64 string
+            reader.readAsDataURL(file);
         }
     };
 
@@ -145,67 +152,43 @@ function Right() {
                     </div>
                 </div>
                 <div className="lower">
-                                           {/* table head */}
-                                                 {/* <div>
-                                                        <div className="filter">
-                                                            <div className='row-number'>
-                                                                <div className=''>
-
-                                                                </div>
-                                                            </div>
-
-                                                            <div className='filter-name'>
-                                                                <div className='filter-name-box'>
-                                                                    <p>product filter</p>
-                                                                </div>
-                                                            </div>
-
-
-                                                        </div>
-
-                                                        <div className="variants">
-                                                                <div className="variant" >
-                                                                    <div className='variant-box'>
-
-                                                                        <br />
-                                                                        <span>variant 1</span>
-
-                                                                    </div>
-                                                                </div>
-                                                            
-                                                        </div>
-                                                    </div> */}
-                                                    {/* table end */}
-
                     <DragDropContext onDragEnd={handleDragEnd}>
                         <Droppable droppableId="rows">
 
                             {(provided) => (
-                                <div
-                                    className="table"
-                                    {...provided.droppableProps}
-                                    ref={provided.innerRef}
-                                >
-                                    {rows.map((row, rowIndex) => (
-                                        <Draggable
-                                            key={row.id}
-                                            draggableId={row.id}
-                                            index={rowIndex}
-                                        >
-                                            {(provided) => (
-                                                <div
-                                                    className="table-row"
-                                                    ref={provided.innerRef}
-                                                    {...provided.draggableProps}
-                                                    {...provided.dragHandleProps}
-                                                >
-                                                   
+                                <table className="table" {...provided.droppableProps} ref={provided.innerRef}>
+                                    <thead>
+                                        <tr className='table-row table-row-head'>
+                                            <div className='table-row-head-filter filter'> <th className='row-number'>#</th>
+                                                <th className='filter-name filter-name-head'>Actions</th></div>
 
-                                                    {/* <div> */}
+                                            <div className='variants'>
+                                                {rows[0].variants.map((_, index) => (
+                                                    <th key={index} className='variant_head variant'>Variant {index + 1}</th>
+                                                ))}
+                                            </div>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                        {rows.map((row, rowIndex) => (
+                                            <Draggable
+                                                key={row.id}
+                                                draggableId={row.id}
+                                                index={rowIndex}
+                                            >
+                                                {(provided) => (
+                                                    <tr
+                                                        className="table-row"
+                                                        ref={provided.innerRef}
+                                                        {...provided.draggableProps}
+                                                        {...provided.dragHandleProps}
+                                                    >
+
+
                                                         <div className="filter">
-                                                            {/* Display dynamic row number here */}
-                                                            <div className='row-number'>
-                                                                <div className=''>
+                                                            <td className='row-number'>
+                                                                <div className='row-number-box'>
                                                                     <p>{rowIndex + 1}</p>
                                                                     <p> <svg
                                                                         xmlns="http://www.w3.org/2000/svg"
@@ -223,15 +206,15 @@ function Right() {
                                                                         <path d="M4 5a1 1 0 102 0 1 1 0 10-2 0M11 5a1 1 0 102 0 1 1 0 10-2 0M18 5a1 1 0 102 0 1 1 0 10-2 0M4 12a1 1 0 102 0 1 1 0 10-2 0M11 12a1 1 0 102 0 1 1 0 10-2 0M18 12a1 1 0 102 0 1 1 0 10-2 0M4 19a1 1 0 102 0 1 1 0 10-2 0M11 19a1 1 0 102 0 1 1 0 10-2 0M18 19a1 1 0 102 0 1 1 0 10-2 0"></path>
                                                                     </svg></p>
                                                                 </div>
-                                                            </div>
+                                                            </td>
 
-                                                            <div className='filter-name'>
+                                                            <td className='filter-name'>
                                                                 <div className='filter-name-box'>
                                                                     <p>production collectio</p>
                                                                     <p>Contains</p>
                                                                     <p>anarkali kurtas</p>
                                                                 </div>
-                                                            </div>
+                                                            </td>
 
                                                             <div className='filter-action'>
                                                                 <button
@@ -257,7 +240,7 @@ function Right() {
                                                             </div>
                                                         </div>
 
-                                                        <div className="variants">
+                                                        <td className="variants">
                                                             {row.variants.map((variant, variantIndex) => (
                                                                 <div className="variant" key={variant.id}>
                                                                     <div className='variant-box'>
@@ -325,20 +308,38 @@ function Right() {
                                                                     </svg>
                                                                 </button>
                                                             </div>
-                                                        </div>
-                                                    </div>
-                                                // </div>
-                                            )}
-                                        </Draggable>
-                                    ))}
-                                    {provided.placeholder}
-                                </div>
+                                                        </td>
+                                                    </tr>
+                                                    // </div>
+                                                )}
+                                            </Draggable>
+                                        ))}
+                                        {provided.placeholder}
+
+                                    </tbody>
+                                </table>
                             )}
                         </Droppable>
                     </DragDropContext>
-                    <button className="add-row-btn" onClick={addRow}>
-                        Add New Filter (Row)
-                    </button>
+                    <div className='add-row-btn-container'>
+                        <button className="add-row-btn" onClick={addRow}>
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="24"
+                                height="24"
+                                fill="none"
+                                stroke="black"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth="2"
+                                className="icon icon-tabler icons-tabler-outline icon-tabler-plus"
+                                viewBox="0 0 24 24"
+                            >
+                                <path stroke="none" d="M0 0h24v24H0z"></path>
+                                <path d="M12 5v14M5 12h14"></path>
+                            </svg>
+                        </button>
+                    </div>
                 </div>
             </div >
         </>
