@@ -52,7 +52,11 @@
 .left_upper ol li svg :hover,
 .left_down ol li svg:hover {
     cursor: pointer;
+}
 
+ol li :hover {
+    color: #54e102;
+    cursor: pointer;
 }
 
 @media (max-width: 768px) {

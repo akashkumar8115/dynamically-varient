@@ -1,0 +1,55 @@
+.side-left {
+    cursor: pointer;
+}
+
+.test_3 {
+    font-size: 1.5rem;
+}
+
+/* Default styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+/* Mobile devices */
+@media screen and (max-width: 800px) {
+
+    .test_3 {
+        font-size: 0.6rem;
+        padding: 0 2rem 1rem 1rem;
+    }
+
+    /* Other mobile-specific styles */
+}
+
+/* Tablets */
+@media screen and (min-width: 800px) and (max-width: 1000px) {
+
+    .test_3 {
+        font-size: 0.6rem;
+    }
+}
+
+/* Laptops and small screens */
+@media screen and (min-width: 1000px) and (max-width: 1199px) {
+    .test_3 {
+        font-size: 0.8rem;
+    }
+
+    .left {
+        display: none;
+
+    }
+
+    .left_box {}
+
+}
+
+/* Desktops and large screens */
+/* @media screen and (max-width: 1220px) {
+    .test_3 {
+        font-size: 1rem;
+    }
+} */
