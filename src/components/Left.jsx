@@ -1,5 +1,7 @@
 import React from 'react'
 import '../styles/Left.css';
+import "../styles/Responnsive.css";
+import "../styles/Lefts.css"
 function Left() {
     return (
         <div className='left_box'>
